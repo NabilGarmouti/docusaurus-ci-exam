@@ -1,0 +1,106 @@
+# Documentation de l'Initialisation et du Déploiement d'un Projet Docusaurus
+
+## 1. Initialisation du Projet Docusaurus
+
+### Étapes
+
+1. **Cloner le dépôt GitHub :**
+   ```bash
+   git clone https://github.com/votre-nom-utilisateur/docusaurus-ci-exam.git
+   cd docusaurus-ci-exam
+
+
+2.  **Initialiser un nouveau site Docusaurus :**
+
+npx create-docusaurus@latest my-website classic
+
+
+3. **Déplacer les fichiers dans le répertoire racine :**
+
+Move-Item -Path "my-website\*" -Destination "." -Force
+Move-Item -Path "my-website\.*" -Destination "." -Force
+Remove-Item -Recurse -Force "my-website"
+
+4. **Installer l'indépendance*
+
+  npm instamm
+
+5. **Démarrer le serveur de développement :**
+
+npm run start
+
+npm install
+
+
+## 2. Configuration de l'Intégration Continue (CI) avec GitHub Actions
+
+
+Créer un fichier de workflow :
+
+1- Créez le répertoire .github/workflows dans le projet.
+2- Ajoutez un fichier nommé deploy.yml avec le contenu suivant :
+yaml
+  
+3- Copier le code
+name: Deploy Docusaurus site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Docusaurus site
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.GH_PAT }}
+          publish_dir: ./build
+            
+4- Commiter et pousser les changements :
+
+bash
+Copier le code
+git add .github/workflows/deploy.yml
+git commit -m "Ajout de la configuration CI pour déployer sur GitHub Pages"
+git push origin main
+Configurer GitHub Pages :
+
+Allez dans les paramètres du dépôt sur GitHub.
+Dans la section "Source", sélectionnez "gh-pages" et enregistrez.
+3. Résolution des Problèmes de Déploiement
+Problème : Erreur d'autorisation lors du déploiement
+Solution :
+Générer un Token Personnel (GH_PAT) :
+
+Allez dans les paramètres de votre compte GitHub.
+Allez dans "Developer settings" > "Personal access tokens".
+Cliquez sur "Generate new token".
+Donnez un nom à votre token.
+Cochez les permissions nécessaires, en particulier les permissions repo.
+Cliquez sur "Generate token".
+Important : Copiez le token généré.
+Ajouter le Token comme Secret dans GitHub Actions :
+
+Allez dans les paramètres de votre dépôt sur GitHub.
+Sélectionnez "Secrets and variables" > "Actions".
+Ajoutez un nouveau secret :
+Name : GH_PAT
+Secret : Collez le token personnel copié précédemment.
